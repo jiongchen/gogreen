@@ -26,7 +26,7 @@ def inv_elas_symbol_gra(C_vec, xj):
     C_tensor = C_vec.reshape((3, 3, 3, 3))
     C_ik = jnp.einsum('ijkl,j,l->ik', C_tensor, xj, xj)
     invC_ik = jnp.linalg.inv(C_ik)
-    return 1.0j*jnp.einsum('j,ik->jik', xj, invC_ik)
+    return 1.0j*jnp.einsum('ij,p->ijp', invC_ik, xj)
 
     
 @jax.jit
@@ -56,14 +56,14 @@ class gg_material_func:
             self,            
             C_flat: jnp.ndarray,
             maxl: int,
-            num_quadr: int
+            lebedev_order: int
     ):
         # flattened material tensor
         self.C_flat = C_flat
         self.maxl = maxl
         
         # compute lebedev quadrature
-        qx, qw = lebedev_rule(num_quadr)
+        qx, qw = lebedev_rule(lebedev_order)
         self.qx, self.qw = qx.T, qw
         print(f"qx shape={self.qx.shape}")
         print(f"sum(qw)={jnp.sum(qw)}")
@@ -139,7 +139,7 @@ if __name__ == "__main__":
     
     C_flat = jnp.array(C_tens.flatten())
     
-    mat_func = gg_material_func(C_flat, maxl=20, num_quadr=11)
+    mat_func = gg_material_func(C_flat, maxl=20, lebdev_order=11)
     print(mat_func.Clm(2, 0))
     print(mat_func.CClm(1, 0))
     

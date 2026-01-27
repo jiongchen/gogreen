@@ -10,6 +10,9 @@ jax.config.update("jax_enable_x64", True)
 
 
 class gg_radial_func:
+    """
+    The singularity is smoothed out with exp impulses
+    """
     def __init__(self, eps: float, maxl: int):
         """
         eps: epsilon for regularizing GF
