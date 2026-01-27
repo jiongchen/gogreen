@@ -22,33 +22,17 @@ class gg_radial_func:
         self.SQRT_PI = jnp.sqrt(jnp.pi)
         self.MAXL = maxl
         
-        ls = jnp.arange(self.MAXL)
-
-        # Eq.13
-        term_even = (eps**(-1.0 - ls)) * gamma((1.0 + ls) / 2.0)
-        term_odd = (eps**(-2.0 - ls)) * gamma(1.0 + ls / 2.0)
-        
-        is_even = (ls.astype(int) % 2 == 0)
-        self.greenL_ = jnp.where(is_even, term_even, term_odd)
-
-        # to regularize the hypergeometric function
-        self.gammaL_ = 1.0 / gamma(1.5 + ls)
-
     def Rlr(self, l, r):
-        assert 0 <= l and l < self.MAXL and l%2 == 0
-        
-        gl = self.greenL_[l]
-        gaml = self.gammaL_[l]
+        gl = (self.eps_**(-1.0 - l)) * gamma((1.0 + l) / 2.0) 
+        gaml = 1.0 / gamma(1.5 + l)
         arg_1f1 = -(r * r) / (self.eps_ * self.eps_)
         hf11 = hyp1f1((1.0 + l) / 2.0, 1.5 + l, arg_1f1)
 
         return self.SQRT_PI/2.0 * (r**l) * gl * hf11 * gaml
 
-    def RRlr(self, l, r):
-        assert 0 <= l and l < self.MAXL and l%2 == 1
-        
-        gl = self.greenL_[l]
-        gaml = self.gammaL_[l]
+    def RRlr(self, l, r):        
+        gl = (self.eps_**(-2.0 - l)) * gamma(1.0 + l / 2.0)
+        gaml = 1.0 / gamma(1.5 + l)
         arg_1f1 = -(r * r) / (self.eps_ * self.eps_)
         hf11 = hyp1f1(1.0 + l / 2.0, 1.5 + l, arg_1f1)
         
