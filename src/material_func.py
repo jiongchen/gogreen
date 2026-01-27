@@ -13,6 +13,9 @@ jax.config.update("jax_enable_x64", True)
 
 @jax.jit
 def inv_elas_symbol(C_vec, xi):
+    """
+    C_vec is an 81d vector
+    """
     C_tensor = C_vec.reshape((3, 3, 3, 3))
     C_ik = jnp.einsum('ijkl,j,l->ik', C_tensor, xi, xi)
     return jnp.linalg.inv(C_ik)
@@ -33,14 +36,14 @@ def xyz_to_tp(qx, qy, qz):
     """
     r = jnp.sqrt(qx**2 + qy**2 + qz**2)    
     theta = jnp.acos(qz / r)
-    phi = jnp.atan2(qy, qx)    
+    phi = jnp.atan2(qy, qx)
     return phi, theta
 
 
 @jax.jit
 def tp_to_xyz(phi, theta):
     """
-    Spherical (phi, theta) to (x, y, z)
+    unit Spherical (phi, theta) to (x, y, z)
     """
     qx = jnp.sin(theta)*jnp.cos(phi)
     qy = jnp.sin(theta)*jnp.sin(phi)
@@ -80,7 +83,7 @@ class gg_material_func:
         phi_vec = self.tp[:, 1]
         l_vec = jnp.full_like(theta_vec, l, dtype=int)
         m_vec = jnp.full_like(phi_vec, m, dtype=int)
-        sh_at_q = jnp.conj(sph_harm_y(l_vec, m_vec, theta_vec, phi_vec))
+        sh_at_q = jnp.conj(sph_harm_y(l_vec, m_vec, theta_vec, phi_vec, n_max=self.maxl-1))
 
         ret = jnp.einsum('i,ijk,i->jk', self.qw, Cinv_at_q, sh_at_q)
         return ret
@@ -92,18 +95,18 @@ class gg_material_func:
         phi_vec = self.tp[:, 1]
         l_vec = jnp.full_like(theta_vec, l, dtype=int)
         m_vec = jnp.full_like(phi_vec, m, dtype=int)
-        sh_at_q = jnp.conj(sph_harm_y(l_vec, m_vec, theta_vec, phi_vec))
+        sh_at_q = jnp.conj(sph_harm_y(l_vec, m_vec, theta_vec, phi_vec, n_max=self.maxl-1))
 
         ret = jnp.einsum('i,ijkl,i->jkl', self.qw, xiCinv_at_q, sh_at_q)
         return ret
 
     def _precompute(self):
         for l in range(0, self.maxl, 2):
-            for m in range(-l, l):
+            for m in range(-l, l+1):
                 self.C_lm[(l, m)] = self._intS_CijYlm(l, m)
 
         for l in range(1, self.maxl, 2):
-            for m in range(-l, l):
+            for m in range(-l, l+1):
                 self.dC_lm[(l, m)] = self._intS_xiCijYlm(l, m)
 
     def Clm(self, l, m):
