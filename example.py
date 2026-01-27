@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import jax.numpy as jnp
-from mpl_toolkits.mplot3d import Axes3D
 import jax
 from src.gf import gg_reg_gf
 
@@ -187,4 +186,3 @@ if __name__ == "__main__":
     plt.subplots_adjust(top=0.12)
     plt.tight_layout()
     plt.show()
-    plt.savefig('result.png')
