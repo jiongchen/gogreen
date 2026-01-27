@@ -8,12 +8,9 @@ from jax.scipy.special import hyp1f1
 
 jax.config.update("jax_enable_x64", True)
 
-class gogreen_radial_func:
-    def __init__(
-            self,
-            eps: float,
-            maxl: int
-    ):
+
+class gg_radial_func:
+    def __init__(self, eps: float, maxl: int):
         """
         eps: epsilon for regularizing GF
         maxl: maximum bands
@@ -34,27 +31,25 @@ class gogreen_radial_func:
         # to regularize the hypergeometric function
         self.gammaL_ = 1.0 / gamma(1.5 + ls)
 
-    @partial(jit, static_argnums=(0, 3))
-    def __call__(
-            self,
-            l: int,
-            r: jnp.ndarray,
-            order: str
-    ):
+    def Rlr(self, l, r):
+        assert 0 <= l and l < self.MAXL and l%2 == 0
+        
         gl = self.greenL_[l]
         gaml = self.gammaL_[l]
-        
         arg_1f1 = -(r * r) / (self.eps_ * self.eps_)
+        hf11 = hyp1f1((1.0 + l) / 2.0, 1.5 + l, arg_1f1)
+
+        return self.SQRT_PI/2.0 * (r**l) * gl * hf11 * gaml
+
+    def RRlr(self, l, r):
+        assert 0 <= l and l < self.MAXL and l%2 == 1
         
-        if order == "vector":
-            hf11 = hyp1f1((1.0 + l) / 2.0, 1.5 + l, arg_1f1)
-            return self.SQRT_PI/2.0 * (r**l) * gl * hf11 * gaml
-            
-        elif order == "matrix":
-            hf11 = hyp1f1(1.0 + l / 2.0, 1.5 + l, arg_1f1)
-            return self.SQRT_PI * (r**l) * gl * hf11 * gaml
-            
-        return jnp.nan
+        gl = self.greenL_[l]
+        gaml = self.gammaL_[l]
+        arg_1f1 = -(r * r) / (self.eps_ * self.eps_)
+        hf11 = hyp1f1(1.0 + l / 2.0, 1.5 + l, arg_1f1)
+        
+        return self.SQRT_PI * (r**l) * gl * hf11 * gaml
 
         
 if __name__ == "__main__":
@@ -66,18 +61,18 @@ if __name__ == "__main__":
     
     # for GF, only even bands
     L_VALUES = [0, 2, 4, 6, 8]    
-    radial_func = gogreen_radial_func(eps=EPS, maxl=MAXL)
+    radial_func = gg_radial_func(eps=EPS, maxl=MAXL)
     results_vector = {}    
     for l in L_VALUES:
-        rl = radial_func(l, R_POINTS, "vector")
+        rl = radial_func.Rlr(l, R_POINTS)
         results_vector[l] = rl
 
     # for derivatives of GF, only odd bands
     L_VALUES = [1, 3, 5, 7, 9]
-    radial_func = gogreen_radial_func(eps=EPS, maxl=MAXL)
+    radial_func = gg_radial_func(eps=EPS, maxl=MAXL)
     results_matrix = {}
     for l in L_VALUES:
-        Rl = radial_func(l, R_POINTS, "matrix")
+        Rl = radial_func.RRlr(l, R_POINTS)
         results_matrix[l] = Rl
 
     for l, y in results_vector.items():
