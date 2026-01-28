@@ -134,7 +134,7 @@ if __name__ == "__main__":
         (points[:, 1] + disp_v[:, 1]).reshape(X.shape),
         (points[:, 2] + disp_v[:, 2]).reshape(X.shape),        
         color='teal',
-        edgecolor='black',
+        edgecolor='red',
         linewidth=0.5,
         alpha=0.0
     )
@@ -148,8 +148,8 @@ if __name__ == "__main__":
         (points[:, 1] + disp_m[:, 1]).reshape(X.shape),
         (points[:, 2] + disp_m[:, 2]).reshape(X.shape),
         color='violet',
-        edgecolor='black',
-        linewidth=0.5,
+        edgecolor='orange',
+        linewidth=0.7,
         alpha=0.0
     )
     ax1.set_title('matrix impulse:\n pinching')
@@ -162,8 +162,8 @@ if __name__ == "__main__":
         (points[:, 1] + disp_s[:, 1]).reshape(X.shape),
         (points[:, 2] + disp_s[:, 2]).reshape(X.shape),
         color='violet',
-        edgecolor='black',
-        linewidth=0.5,
+        edgecolor='teal',
+        linewidth=0.7,
         alpha=0.0
     )
     ax2.set_title('matrix impulse:\n scaling')
@@ -176,8 +176,8 @@ if __name__ == "__main__":
         (points[:, 1] + disp_t[:, 1]).reshape(X.shape),
         (points[:, 2] + disp_t[:, 2]).reshape(X.shape),
         color='violet',
-        edgecolor='black',
-        linewidth=0.5,
+        edgecolor='purple',
+        linewidth=0.8,
         alpha=0.0
     )
     ax3.set_title('matrix impulse:\n twisting')
