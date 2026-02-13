@@ -1,6 +1,6 @@
 # GoGreen
 
-![result](result.png)
+![result](result.gif)
 
 This is a minimalist python implementation of my SIGGRAPH 2022 paper,
 [*Go Green*: General Regularized Green’s Functions for
