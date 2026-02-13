@@ -212,4 +212,4 @@ if __name__ == "__main__":
         return surf1, surf2, surf3, surf4, surf5, surf6
     
     ani = FuncAnimation(fig, update, frames=len(s_values), interval=5, blit=False)
-    ani.save('result.gif', writer='pillow', fps=30)
+    ani.save('result.gif', writer='pillow', fps=20)
