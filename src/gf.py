@@ -32,7 +32,7 @@ class gg_reg_gf:
                     theta,
                     phi,
                     n_max=self.maxl-1)
-                comp_l += jnp.einsum('i,jk->ijk', r_term * d_term, self.C.Clm(l, m))            
+                comp_l += jnp.einsum('i,jk->ijk', r_term * d_term, self.C.Clm(l, m))
             ret += comp_l
             print(f"[G at l={l}] norm={jnp.linalg.norm(comp_l)}")
 

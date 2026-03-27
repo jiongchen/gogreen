@@ -25,16 +25,24 @@ class gg_radial_func:
     def Rlr(self, l, r):
         gl = (self.eps_**(-1.0 - l)) * gamma((1.0 + l) / 2.0) 
         gaml = 1.0 / gamma(1.5 + l)
+
         arg_1f1 = -(r * r) / (self.eps_ * self.eps_)
-        hf11 = hyp1f1((1.0 + l) / 2.0, 1.5 + l, arg_1f1)
+        a = (1.0 + l) / 2.0
+        b = 1.5 + l
+        # hf11 = hyp1f1((1.0 + l) / 2.0, 1.5 + l, arg_1f1)
+        hf11 = jnp.exp(arg_1f1) * hyp1f1(b - a, b, -arg_1f1)
 
         return self.SQRT_PI/2.0 * (r**l) * gl * hf11 * gaml
 
     def RRlr(self, l, r):        
         gl = (self.eps_**(-2.0 - l)) * gamma(1.0 + l / 2.0)
         gaml = 1.0 / gamma(1.5 + l)
+
         arg_1f1 = -(r * r) / (self.eps_ * self.eps_)
-        hf11 = hyp1f1(1.0 + l / 2.0, 1.5 + l, arg_1f1)
+        a = 1.0 + l / 2.0
+        b = 1.5 + l        
+        # hf11 = hyp1f1(1.0 + l / 2.0, 1.5 + l, arg_1f1)
+        hf11 = jnp.exp(arg_1f1) * hyp1f1(b - a, b, -arg_1f1)        
         
         return self.SQRT_PI * (r**l) * gl * hf11 * gaml
 
