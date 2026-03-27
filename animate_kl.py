@@ -108,15 +108,15 @@ def main():
         G12=0.1, G23=0.1, G13=3
     )
 
-    frames = 20
+    frames = 32
     ts = np.linspace(0, 1, frames)
     surfaces = [
         green_surface(
             points=points,
             C_voigt=(1.0-t)*C_voigt_iso + t*C_voigt_orth,
-            maxl=20,
+            maxl=24,
             eps=0.3,
-            lebedev_order=25
+            lebedev_order=35
         ).reshape(X.shape)
         for t in ts
     ]
@@ -124,21 +124,31 @@ def main():
     zmin = min(surface.min() for surface in surfaces)
     zmax = max(surface.max() for surface in surfaces)
 
-    fig = plt.figure(figsize=(10, 7))
-    ax = fig.add_subplot(111, projection="3d")
-
+    fig = plt.figure(figsize=(16, 7))
+    fig.tight_layout()
+    
+    ax = fig.add_subplot(121, projection="3d")
+    ax2 = fig.add_subplot(122)
+    
     def update(frame_idx):
         U = surfaces[frame_idx]
+
         ax.clear()
         ax.plot_surface(X, Y, U, cmap="viridis", edgecolor="k", linewidth=0.25)
         ax.set_xlabel("x")
         ax.set_ylabel("y")
         ax.set_zlabel("u_z")
-        ax.set_title("Isotropic to orthotropic GF")
+        ax.set_title("u(x)=G(x,y)f(y)")
         ax.set_xlim(X.min(), X.max())
         ax.set_ylim(Y.min(), Y.max())
         ax.set_zlim(zmin, zmax)
         ax.view_init(elev=35, azim=-125)
+
+        ax2.clear()
+        ax2.contour(X, Y, U, levels=20, colors='k', linewidths=0.5, alpha=0.5)
+        ax2.set_title("Contour map")
+        ax2.set_aspect('equal')
+
         return ()
 
     ani = FuncAnimation(fig, update, frames=frames, interval=140, blit=False)
