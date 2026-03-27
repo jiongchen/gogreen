@@ -113,6 +113,7 @@ class gg_material_func:
         for l in range(0, self.maxl):
             for m in range(-l, l+1):
                 self.C_lm[(l, m)] = self._intS_CijYlm(l, m)
+                # print(f"C{l}{m}={jnp.linalg.norm(self.C_lm[(l, m)])}")
 
         for l in range(0, self.maxl):
             for m in range(-l, l+1):
