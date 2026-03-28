@@ -1,8 +1,8 @@
 # GoGreen
 
-![result](result.gif)
+![result](result/result.gif)
 
-![another](ani_kl.gif)
+![another](result/ani_kl.gif)
 
 This is a minimalist python implementation of my SIGGRAPH 2022 paper,
 [*Go Green*: General Regularized Green’s Functions for
