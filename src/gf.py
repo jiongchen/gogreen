@@ -38,6 +38,20 @@ class gg_reg_gf:
 
         return ret.real
 
+    def G_l(self, l, r, theta, phi):
+        r_term = 1.0/(2*jnp.pi**2) * (1.0j**l) * self.R.Rlr(l, r)
+        comp_l = jnp.zeros((r.shape[0], 3, 3))
+        for m in range(-l, l+1):
+            d_term = sph_harm_y(
+                jnp.full_like(theta, l, dtype=int),
+                jnp.full_like(theta, m, dtype=int),
+                theta,
+                phi,
+                n_max=self.maxl-1)
+            comp_l += jnp.einsum('i,jk->ijk', r_term * d_term, self.C.Clm(l, m))
+
+        return comp_l.real
+
     def graG(self, r, theta, phi):
         ret = jnp.zeros((r.shape[0], 3, 3, 3))
         for l in range(0, self.maxl):
@@ -55,3 +69,18 @@ class gg_reg_gf:
             print(f"[dG at l={l}] norm={jnp.linalg.norm(comp_l)}")
 
         return ret.real
+
+
+    def graG_l(self, l, r, theta, phi):
+        r_term = 1.0/(2*jnp.pi**2) * (1.0j**l) * self.R.RRlr(l, r)
+        comp_l = jnp.zeros((r.shape[0], 3, 3, 3))
+        for m in range(-l, l+1):
+            d_term = sph_harm_y(
+                jnp.full_like(theta, l, dtype=int),
+                jnp.full_like(theta, m, dtype=int),
+                theta,
+                phi,
+                n_max=self.maxl-1)
+            comp_l += jnp.einsum('i,jkl->ijkl', r_term*d_term, self.C.CClm(l, m))
+
+        return comp_l.real
