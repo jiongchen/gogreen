@@ -114,12 +114,12 @@ if __name__ == "__main__":
     )
 
     fig, axes = plt.subplots(
-        1,
-        len(BANDS),
-        figsize=(20, 4.8),
+        2, 3,
+        figsize=(15, 10),
         subplot_kw={"projection": "3d"},
         constrained_layout=True,
     )
+    axes = axes.ravel()
 
     def config_ax(ax, l, azim, color):
         ax.clear()
