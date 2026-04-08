@@ -110,7 +110,7 @@ def draw_box(ax, limits):
 
 
 def main():
-    nx = ny = nz = 13
+    nx = ny = nz = 32
     extent = 1.0
     maxl = max(BANDS) + 1
     scale_strength = -0.2
@@ -166,7 +166,7 @@ def main():
             c=vals,
             cmap=cmap,
             s=9,
-            alpha=0.9,
+            alpha=0.6,
             linewidths=0.0,
         )
         draw_box(ax, base_limits)

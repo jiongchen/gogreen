@@ -136,7 +136,7 @@ if __name__ == "__main__":
             cstride=1
         )
         if l == -1:
-            ax.set_title("total")
+            ax.set_title("Total deformation")
         else:
             ax.set_title(f"Band l={l}")
         ax.set_xticks([])
